@@ -52,7 +52,7 @@
                 <span class="el-icon-menu"></span>
                 <span>角色列表</span>
               </el-menu-item>
-                 <el-menu-item index="2-2">
+                 <el-menu-item index="rights">
                 <span class="el-icon-menu"></span>
                 <span>权限列表</span>
               </el-menu-item>
