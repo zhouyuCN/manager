@@ -12,11 +12,11 @@
         label-position="top"
         label-width="80px"
       >
-        <el-form-item class="title" label="名称" prop="userName">
-          <el-input v-model="loginFrom.userName"></el-input>
+        <el-form-item class="title" label="名称" prop="username">
+          <el-input v-model="loginFrom.username"></el-input>
         </el-form-item>
-        <el-form-item class="title" label="活动区域" prop="passWord">
-          <el-input v-model="loginFrom.passWord"></el-input>
+        <el-form-item class="title" label="活动区域" prop="password">
+          <el-input v-model="loginFrom.password"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="submitForm('loginFrom')" type="primary">登入</el-button>
@@ -33,15 +33,15 @@ export default {
   data() {
     return {
       loginFrom: {
-        userName: "",
-        passWord: ""
+        username: "",
+        password: ""
       },
       rules: {
-        userName: [
+        username: [
           { required: true, message: " 请输入用户名", trigger: "blur" },
           { min: 4, max: 16, message: "长度在4-16个字符", trigger: "blur" }
         ],
-        passWord: [
+        password: [
           { required: true, message: " 密码不能为空", trigger: "blur" },
           { min: 6, max: 16, message: "长度在6-16个字符", trigger: "blur" }
         ]
@@ -50,8 +50,18 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+      this.$refs[formName].validate(async valid => {
         if (valid) {
+       let res = await this.$axios.post('login',this.loginFrom);
+      //  console.log(res);
+       if(res.data.meta.status===200){
+         this.$message.success(res.data.meta.msg)
+         window.sessionStorage.setItem('token',res.data.data.token)
+         this.$router.push('/')
+       }else if(res.data.meta.status===400){
+         this.$message.error(res.data.meta.msg);
+       }
+       
         } else {
           this.$message.error({
             message: "数据格式错误,请按照提示修改",

@@ -11,7 +11,7 @@
           <h2>黑马电商管理系统</h2>
         </el-col>
         <el-col :span="3" class="Logout">
-          <el-button type="danger" round>登出</el-button>
+          <el-button type="danger" @click="logout" round>登出</el-button>
         </el-col>
       </el-row>1
     </el-header>
@@ -117,7 +117,22 @@
 
 <script>
 export default {
-  name: "index"
+  name: "index",
+  methods:{
+    //退出
+    logout(){
+      window.sessionStorage.removeItem('token');
+      this.$router.push('/login');
+      this.$message.success('退出成功')
+    }
+  },
+  beforeCreate() {
+    if(!(window.sessionStorage.getItem('token'))){
+      this.$router.push('/login');
+      this.$message.error('请登入')
+     
+    }
+  },
 };
 </script>
 

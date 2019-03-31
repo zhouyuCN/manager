@@ -16,7 +16,6 @@ import rights from './components/rights.vue'
 let routes = [{
         path: '/',
         component: index,
-        redirect: '/users',
     children: [
         {
             path: 'users',
