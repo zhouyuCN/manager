@@ -57,7 +57,7 @@ export default {
        if(res.data.meta.status===200){
          this.$message.success(res.data.meta.msg)
          window.sessionStorage.setItem('token',res.data.data.token)
-         this.$router.push('/')
+         this.$router.push('/users')
        }else if(res.data.meta.status===400){
          this.$message.error(res.data.meta.msg);
        }

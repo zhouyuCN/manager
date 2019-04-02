@@ -1,15 +1,12 @@
 <template>
   <div class="userList">
     <!-- 面包屑 -->
-    <el-breadcrumb class="bread" separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+  <my-bread titleOne="用户管理"  titleTwo="用户列表"></my-bread>
+
     <el-row>
       <!-- 输入框  -->
       <el-col :span="5">
-        <el-input placeholder="请输入内容" v-model="query" class="input-with-select">
+        <el-input placeholder="请输入内容" v-model="sendData.query" class="input-with-select">
           <el-button slot="append" @click="search" icon="el-icon-search"></el-button>
         </el-input>
       </el-col>
@@ -51,7 +48,13 @@
             icon="el-icon-delete"
             @click="handleDelete(scope.$index, scope.row)"
           ></el-button>
-          <el-button type="danger" plain size="mini" icon="el-icon-check"></el-button>
+          <el-button
+            type="danger"
+            plain
+            size="mini"
+            icon="el-icon-check"
+            @click="showRole(scope.row)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,9 +64,11 @@
     :current-page="currentPage4"-->
     <el-pagination
       :page-sizes="[5, 10, 15, 20]"
-      :page-size="100"
+      :page-size="sendData.pagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
+      @current-change="currentChange"
+      @size-change="sizeChange"
     ></el-pagination>
 
     <!-- 添加用户弹窗 -->
@@ -105,6 +110,26 @@
         <el-button type="primary" @click="editUserForm('editForm')">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 用户角色弹窗 -->
+    <el-dialog title="用户角色" :visible.sync="roleFormVisible">
+      <el-form :model="editForm" ref="editForm">
+        <el-form-item label="用户名称" :label-width="formLabelWidth">{{roleList.username}}</el-form-item>
+        <el-form-item label="角色选择" :label-width="formLabelWidth">
+          <el-select v-model="roleList.role_name" placeholder="请选择">
+            <el-option
+              v-for="item in rolenames"
+              :key="item.value"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="roleFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="roleUserForm('editForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -116,11 +141,15 @@ export default {
       //用户数据
       userlist: [],
       total: 0,
-      query: "",
-      pagenum: 1,
-      pagesize: 10,
+      //页码
+      sendData: {
+        query: "",
+        pagenum: 1,
+        pagesize: 10
+      },
       addFormVisible: false,
       editFormVisible: false,
+      roleFormVisible: false,
       formLabelWidth: "120px",
       addForm: {
         username: "",
@@ -133,6 +162,9 @@ export default {
         email: "",
         mobile: ""
       },
+      roleList: {},
+      rolenames: [],
+      roleUser: [],
       rules: {
         username: [
           { required: true, message: " 请输入用户名", trigger: "blur" },
@@ -148,15 +180,11 @@ export default {
   methods: {
     async search() {
       let res = await this.$axios.get("users", {
-        params: {
-          query: this.query,
-          pagenum: 1,
-          pagesize: 10
-        }
+        params: this.sendData
       });
       this.userlist = res.data.data.users;
       this.total = res.data.data.total;
-      this.query = "";
+      this.sendData.query = "";
     },
 
     //编辑用户
@@ -203,7 +231,7 @@ export default {
         });
     },
     startBtn(row) {
-    this.$axios.put(`users/${row.id}/state/${row.mg_state}`);
+      this.$axios.put(`users/${row.id}/state/${row.mg_state}`);
     },
     //添加用户
     addUserForm(addForm) {
@@ -224,6 +252,32 @@ export default {
           return false;
         }
       });
+    },
+    // 角色
+    async showRole(row) {
+      this.roleFormVisible = true;
+      console.log(row);
+      this.roleList = row;
+      let res = await this.$axios.get("roles");
+      this.rolenames = res.data.data;
+    },
+    async roleUserForm(formName) {
+      let res = await this.$axios.put(`users/${this.roleList.id}/role`, {
+        rid: this.roleList.role_name
+      });
+      if (res.data.meta.status == 200) {
+        this.roleFormVisible = false;
+        this.search();
+      }
+    },
+    //分页
+    sizeChange(size) {
+      this.sendData.pagesize = size;
+      this.search();
+    },
+    currentChange(current) {
+      this.sendData.pagenum = current;
+      this.search();
     }
   },
   created() {
@@ -233,9 +287,5 @@ export default {
 </script>
 
 <style lang="scss">
-.bread {
-  background-color: #d3dce6;
-  line-height: 45px;
-  padding-left: 15px;
-}
+
 </style>

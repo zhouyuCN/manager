@@ -12,6 +12,11 @@ axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
+
+//导入面包屑模板
+import myBread from './components/my-bread.vue';
+Vue.component('my-bread', myBread)
+
 // 请求数据
 axios.interceptors.request.use(function (config) {
   config.headers.Authorization = window.sessionStorage.getItem('token');

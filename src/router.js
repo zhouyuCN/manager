@@ -8,6 +8,12 @@ import index from './components/index.vue'
 import users from './components/users.vue'
 import roles from './components/roles.vue'
 import rights from './components/rights.vue'
+import goods from './components/goods.vue'
+import orders from './components/orders.vue'
+import params from './components/params.vue'
+import categories from './components/categories.vue'
+
+
 
 
 
@@ -15,7 +21,8 @@ import rights from './components/rights.vue'
 
 let routes = [{
         path: '/',
-        component: index,
+    component: index,
+        
     children: [
         {
             path: 'users',
@@ -29,6 +36,23 @@ let routes = [{
             path: 'rights',
             component: rights
         },
+        {
+            path: 'goods',
+            component: goods
+        },
+        {
+            path: 'orders',
+            component: orders
+        },
+        {
+            path: 'params',
+            component: params
+        },
+        {
+            path: 'categories',
+            component: categories
+        },
+      
     ]
 
 
