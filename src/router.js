@@ -12,6 +12,7 @@ import goods from './components/goods.vue'
 import orders from './components/orders.vue'
 import params from './components/params.vue'
 import categories from './components/categories.vue'
+import reports from './components/reports.vue'
 
 
 
@@ -51,6 +52,10 @@ let routes = [{
         {
             path: 'categories',
             component: categories
+        },
+        {
+            path: 'reports',
+            component: reports
         },
       
     ]

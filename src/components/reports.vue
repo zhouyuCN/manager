@@ -1,9 +1,10 @@
 <template>
-  <div ref="main" style="width: 600px;height:400px;"></div>
+  <div ref="main" style="width: 1000px;height:600px;"></div>
 </template>
 
 <script>
 import echarts from "echarts";
+import { log } from 'util';
 export default {
   name: "reports",
   data() {
@@ -94,8 +95,13 @@ export default {
 
     };
   },
+  methods:{
+   async getReports(){
+     let res = await this.$axios('reports/:tipe ');
+    }
+  },
+  mounted(){
 
-  created(){
        let myChart = echarts.init(this.$refs.main);
        myChart.setOption(this.option);
   }

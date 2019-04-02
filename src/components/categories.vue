@@ -10,11 +10,11 @@
       </el-col>
     </el-row>
     <!-- 表格 -->
-    <el-table :data="categorieslist" style="width:100%" border>
-      <el-table-column prop="cat_name" label="分类名称"></el-table-column>
-      <el-table-column prop="cat_level" label="级别"></el-table-column>
-      <el-table-column prop="goods_weight" label="是否有效"></el-table-column>
-      <el-table-column prop="option" label="操作">
+    <el-table v-model="active" tab-position="left " style="height:200" border>
+      <el-table-column label="分类名称"></el-table-column>
+      <el-table-column label="级别"></el-table-column>
+      <el-table-column label="是否有效"></el-table-column>
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             type="primary"
@@ -55,8 +55,7 @@ export default {
     return {
       //用户数据
       categorieslist: [],
-      total: 0,
-   
+
       //页码
       sendData: {
         query: "",
@@ -68,12 +67,11 @@ export default {
   },
   methods: {
     async search() {
+      let { data: res } = await this.$axios.get(`categories?type=3`);
 
-      let res = await this.$axios.get("categories");
-      console.log(res);
-      this.categorieslist = res.data.data;
-      this.total=res.data.data.total;
-      this.sendData.query='';
+      this.categorieslist = res.data;
+      console.log(this.categorieslist);
+      this.sendData.query = "";
     },
     //删除
     handleDelete(index, row) {
@@ -108,8 +106,8 @@ export default {
     }
   },
   //响应数据
-    created() {
-        this.search();
+  created() {
+    this.search();
   }
 };
 </script>
