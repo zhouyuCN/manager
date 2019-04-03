@@ -7,16 +7,16 @@
       <el-table-column type="index" width="50"></el-table-column>
       <el-table-column prop="order_number" label="订单编号"></el-table-column>
       <el-table-column prop="order_price" label="订单价格"></el-table-column>
-      <el-table-column prop="pay_status" label="是否付款">
-          <template slot-scope="scope">
-              <el-button v-if="scope.row.pay_status==='0'" type="danger" plain disabled size="mini">未付款</el-button>
-              <el-button v-if="scope.row.pay_status==='1'" type="success" plain disabled size="mini">已付款</el-button>
-             
-          </template>
-        
+      <el-table-column prop="mobile" label="是否付款">
+        <template slot-scope="scope">
+          <el-button v-if="scope.row.order_pay==='0'" type="danger" plain disabled size="mini">未付款</el-button>
+          <el-button v-else type="success" plain disabled size="mini">已付款</el-button>
+        </template>
       </el-table-column>
       <el-table-column prop="is_send" label="是否发货"></el-table-column>
-      <el-table-column prop="update_time" label="下单时间"></el-table-column>
+      <el-table-column prop="create_time" label="下单时间">
+        <template slot-scope="scope">{{scope.row.create_time | doTime('YYYY-MM-DD HH:mm:ss')}}</template>
+      </el-table-column>
       <el-table-column prop="option" label="操作">
         <template slot-scope="scope">
           <el-button
@@ -41,6 +41,27 @@
       @current-change="currentChange"
       @size-change="sizeChange"
     ></el-pagination>
+    <!-- 弹窗 -->
+    <el-dialog title="添加用户" :visible.sync="addFormVisible">
+      <el-form :model="addForm" :rules="rules" ref="addForm">
+        <el-form-item label="用户名称" :label-width="formLabelWidth" prop="username">
+          <el-input autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="用户密码" :label-width="formLabelWidth" prop="password">
+          <el-input  autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth">
+          <el-input  autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" :label-width="formLabelWidth">
+          <el-input  autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUserForm('addForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -57,7 +78,8 @@ export default {
         pagenum: 1,
         pagesize: 10
       },
-      formLabelWidth: "120px"
+      formLabelWidth: "120px",
+      addFormVisible:false,
     };
   },
   methods: {
@@ -68,7 +90,9 @@ export default {
       this.orderslist = res.data.data.goods;
       this.total = res.data.data.total;
     },
-
+    handleEdit() {
+      this.addFormVisible=true
+    },
     //分页
     sizeChange(size) {
       this.sendData.pagesize = size;

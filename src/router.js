@@ -13,6 +13,7 @@ import orders from './components/orders.vue'
 import params from './components/params.vue'
 import categories from './components/categories.vue'
 import reports from './components/reports.vue'
+import error from './components/error.vue'
 
 
 
@@ -20,7 +21,13 @@ import reports from './components/reports.vue'
 
 //规则
 
-let routes = [{
+let routes = [
+    {
+        path: '/error',
+        component: error
+
+    },
+    {
         path: '/',
     component: index,
         
@@ -59,13 +66,16 @@ let routes = [{
         },
       
     ]
-
-
     },
     {
         path: '/login',
-        component: login
-    }
+        component: login,
+        meta: { 
+            //不需要登入?true
+          noLogin:true  
+         }
+    },
+
 ]
 //实例化路由对象
 
@@ -75,7 +85,17 @@ let router = new VueRouter({
 
 //设置导航守卫
 router.beforeEach((to, from, next) => {
-    if (to.path === '/login'){
+
+    if (to.matched.length === 0) {
+        Vue.prototype.$message.error('输入的地址不对')
+        next('/error')
+    }
+    
+    
+
+    // if (to.path === '/login'){
+    //如果meta字段为noLogin为true 就是登入页  直接放行
+    if(to.meta.noLogin===true){
         next()
     } else {
         if (window.sessionStorage.getItem('token')) {

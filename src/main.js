@@ -2,12 +2,9 @@ import Vue from 'vue'
 import App from './App.vue'
 //导入样式
 import './assets/base.scss'
-// 导入 axios 
-import axios from 'axios';
+
 //抽取axios 
-Vue.prototype.$axios = axios;
-//设置基地址
-axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/';
+
 //饿了么 UI
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -17,28 +14,17 @@ Vue.use(ElementUI);
 import myBread from './components/my-bread.vue';
 Vue.component('my-bread', myBread)
 
-// 请求数据
-axios.interceptors.request.use(function (config) {
-  config.headers.Authorization = window.sessionStorage.getItem('token');
-  return config;
-}, function (error) {
-  // Do something with request error
-  return Promise.reject(error);
-});
+//导入moment
+import moment from 'moment';
+Vue.filter('doTime', (value, doTime)=> {
+ return  moment(value).format(doTime)
+  
+})
 
-// 响应数据
-axios.interceptors.response.use(function (response) {
-  if (response.data.meta.status === 200 || response.data.meta.status === 201 || response.data.meta.status === 204) {
-    Vue.prototype.$message.success(response.data.meta.msg)
-  } else {
-    Vue.prototype.$message.warning(response.data.meta.msg)
-  }
-  return response;
-}, function (error) {
-  // Do something with response error
-  return Promise.reject(error);
-});
 
+//导入我的axios
+import myaxios from './myaxios.js'
+Vue.use(myaxios)
 
 Vue.config.productionTip = false
 
