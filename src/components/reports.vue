@@ -4,7 +4,7 @@
 
 <script>
 import echarts from "echarts";
-import { log } from 'util';
+import { log } from "util";
 export default {
   name: "reports",
   data() {
@@ -91,19 +91,24 @@ export default {
             data: [820, 932, 901, 934, 1290, 1330, 1320]
           }
         ]
-      },
-
+      }
     };
   },
-  methods:{
-   async getReports(){
-     let res = await this.$axios('reports/:tipe ');
-    }
+  methods: {
+    async getReports() {}
   },
-  mounted(){
+  async mounted() {
+    let myChart = echarts.init(this.$refs.main);
+    let res = await this.$axios("reports/type/1");
+    for(let key in res.data.data){
+      this.option[key]=res.data.data[key]
+    }
+      this.option.xAxis[0].type='category';
+    this.option.xAxis[0].boundaryGap=false;
+  
+    
 
-       let myChart = echarts.init(this.$refs.main);
-       myChart.setOption(this.option);
+    myChart.setOption(this.option);
   }
 };
 </script>

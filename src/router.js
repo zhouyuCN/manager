@@ -72,5 +72,22 @@ let routes = [{
 let router = new VueRouter({
     routes
 })
+
+//设置导航守卫
+router.beforeEach((to, from, next) => {
+    if (to.path === '/login'){
+        next()
+    } else {
+        if (window.sessionStorage.getItem('token')) {
+            next()
+        } else {
+            Vue.prototype.$message.error('请登入');
+            next('/login')
+        }
+
+    }
+  
+    
+})
 //暴露
 export default router
